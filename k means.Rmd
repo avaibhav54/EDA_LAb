@@ -1,0 +1,117 @@
+---
+title: 'Ex. No :7 K-Means'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim:
+
+#To study and analyse the given dataset using k means technique in R.
+
+## Setup
+
+#Load necessary packages using library(packagename)
+```{r}
+#install.packages('cluster')
+library(cluster)
+library(dplyr)
+```
+
+
+#Load the data
+```{r}
+data <- read.csv("F:/sem - 6/CSE3506 - EDA/lab/lab 7/Lab Task 7_K-Means.csv")
+```
+
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+dt <- data
+```
+
+
+#Description of the fields
+```{r}
+names(dt)
+```
+
+
+#Basic commands to describe dataset
+```{r}
+str(dt)
+```
+
+```{r}
+sum(is.na(dt))
+```
+
+```{r}
+summary(dt)
+```
+
+```{r}
+dt
+```
+
+```{r}
+dt$system<-as.factor(dt$system)
+str(dt)
+```
+
+* * *
+
+## Questions followed by corresponding Code & Output
+
+```{r}
+pdt<-dt[,c(4,12)] 
+pdt
+```
+
+```{r}
+plot(pdt, main="Price based on weight of car")
+```
+
+```{r}
+km<-kmeans(pdt,2)
+```
+
+```{r}
+plot(pdt,col=(km$cluster+2))
+```
+
+```{r}
+km
+```
+
+#Checking for optimal 'K'
+```{r}
+dt2<-pdt
+ss<-(nrow(dt2)-1)*sum(apply(dt2,2,var))
+for(i in 2:10) ss[i]<-sum(kmeans(dt2,centers = i)$withinss)
+plot(1:10,ss,type='b',xlab='K',ylab='distortion')
+# optimal at 4
+```
+
+```{r}
+km<-kmeans(pdt,4)
+plot(pdt,col=(km$cluster+4))
+km
+```
+
+
+* * *
+
+

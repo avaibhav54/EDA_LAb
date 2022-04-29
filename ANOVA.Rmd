@@ -1,0 +1,150 @@
+---
+title: 'Ex. No : 3 - Augmenting the Thermal Conductivity of PCM Using CuO Nanoparticle'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim:
+
+#To study and analyse the given liquid thermal conductivity dataset and plotting respective graphs using ANOVA technique in R.
+
+## Setup
+```{r}
+rm(list=ls())
+```
+
+#Load necessary packages using library(packagename)
+```{r}
+library(dplyr)
+library(readxl)
+```
+
+#Load the data
+```{r}
+d = read_excel("F:/sem - 6/CSE3506 - EDA/lab/lab 3/Maxwell_Liquid_Exp.xlsx",col_names = TRUE)
+```
+
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+liq_PCM = d
+```
+
+
+#Description of the fields
+```{r}
+names(liq_PCM)
+```
+
+
+#Basic commands to describe dataset
+```{r}
+str(liq_PCM)
+```
+
+```{r}
+head(liq_PCM)
+```
+
+```{r}
+summary(liq_PCM)
+```
+
+* * *
+
+## Questions followed by corresponding Code & Output
+
+#1. Determine the grand mean, and mean of thermal conductivity.
+```{r}
+print(paste('Mean of % inc in thermal(Analytical way - Maxwell Garnett)  :' ,mean(liq_PCM$`%Inc in K(Anal)`)))
+print(paste('Mean of % inc in thermal(Expermintal way)  :' ,mean(liq_PCM$`%Inc in K(Exp)`)))
+
+grandmean = (mean(liq_PCM$`%Inc in K(Anal)`) + mean(liq_PCM$`%Inc in K(Exp)`))/2
+print(paste('Grand Mean :' ,grandmean))
+```
+
+#2. Determine the Sum of Squares between and Sum of Squares within.
+```{r}
+liq_PCM = liq_PCM %>%
+  mutate(`(K(anal)-M)^2` = (`%Inc in K(Anal)`-mean(liq_PCM$`%Inc in K(Anal)`))^2) %>%
+  mutate(`(K(exp)-M)^2` = (`%Inc in K(Exp)`-mean(liq_PCM$`%Inc in K(Exp)`))^2)
+
+SSC = nrow(liq_PCM)*(mean(liq_PCM$`%Inc in K(Anal)`)-grandmean)^2 + nrow(liq_PCM)*(mean(liq_PCM$`%Inc in K(Exp)`)-grandmean)^2
+print(paste('Sum of square between  :' ,SSC))
+
+SSE = sum(liq_PCM$`(K(anal)-M)^2`) + sum(liq_PCM$`(K(exp)-M)^2`)
+print(paste('Sum of square within  :' ,SSE))
+```
+
+#3. Degrees of Freedom (Between, Within and total)
+```{r}
+df_between = 2-1 # number of groups - 1 
+print(paste('Degrees of Freedom between  :' ,df_between))
+
+df_within = nrow(liq_PCM)*2 - 2 #number of rows of data - number of groups
+print(paste('Degrees of Freedom within  :' ,df_within))
+
+df_tot = nrow(liq_PCM)*2 - 1  #number of rows of data - 1
+print(paste('Degrees of Freedom total  :' ,df_tot))
+```
+
+#4. Mean Squares (Between and Within)
+```{r}
+MSC = SSC/df_between
+print(paste('Mean square between  :' ,MSC))
+
+MSE = SSE/df_within
+print(paste('Mean square within  :' ,MSE))
+```
+
+#5. F_Statistic and F Critical
+```{r}
+F_stat = MSC/MSE
+print(paste('F_Statistic  :' ,F_stat))
+
+F_crit = qf(0.05,df_between,df_within)
+print(paste('F_Critical  :' ,F_crit))
+```
+
+#6. Check, Is Null hypothesize accepted?
+```{r}
+if(F_stat < F_crit){
+  print(paste("NULL hypothesis is accepted."))
+} else{
+  print(paste("NULL hypothesis is not accepted."))
+}
+```
+
+#7. Plot Vol. Concentration VS Thermal Conductivity
+```{r}
+plot(liq_PCM$`Vol. Conc.`,liq_PCM$`%Inc in K(Anal)`,type='b')
+plot(liq_PCM$`Vol. Conc.`,liq_PCM$`%Inc in K(Exp)`,type='b')
+```
+
+#8. Plot Vol Concentration Vs % increase in Thermal conductivity –(In bar chart)
+```{r}
+barplot(liq_PCM$`Vol. Conc.`,liq_PCM$`%Inc in K(Anal)`,xlab="Vol. conc.",ylab="% inc in K(Anal)")
+barplot(liq_PCM$`Vol. Conc.`,liq_PCM$`%Inc in K(Exp)`,xlab="Vol. conc.",ylab="% inc in K(Exp)")
+```
+
+#9. Error (Measured Value-Analytical Value)
+```{r}
+liq_PCM %>%
+  mutate(Error = `%Inc in K(Exp)` - `%Inc in K(Anal)`)
+```
+
+* * *
+

@@ -1,0 +1,115 @@
+---
+title: 'Ex. No : 1 - Regression'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim: Regression analysis on the given data set
+
+## Setup
+```{r}
+rm(list=ls())
+```
+
+#Load necessary packages using library(packagename)
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+#Load the data
+```{r}
+data <- read.csv("F:/sem - 6/CSE3506 - EDA/lab/CreditWorthiness.csv")
+```
+
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+creditworth <- data
+```
+
+#Description of the fields
+```{r}
+names(creditworth)
+```
+
+#Basic commands to describe dataset
+```{r}
+str(creditworth)
+```
+
+```{r}
+head(creditworth)
+```
+
+```{r}
+summary(creditworth)
+```
+
+
+* * *
+
+## Performing the set of instrution on given dataset.
+
+## PLOTTING
+
+###Since the linear relation is identeifies of any numberical and floating points, hence the integer data is analysed for the relation.
+```{r}
+ggplot(creditworth,aes(x=Cdur,y=InRate))+geom_point() #To plot - Cdur/InRate
+ggplot(creditworth,aes(x=Cdur,y=InRate))+geom_point()+geom_smooth(method='lm',se=FALSE)
+cor.test(creditworth$Cdur,creditworth$InRate)   # to find the correlation value
+```
+```{r}
+ggplot(creditworth,aes(x=age,y=Cdur))+geom_point() #To plot - Cdur/InRate
+ggplot(creditworth,aes(x=age,y=Cdur))+geom_point()+geom_smooth(method='lm',se=FALSE)
+cor.test(creditworth$Cdur,creditworth$age)   # to find the correlation value
+```
+```{r}
+ggplot(creditworth,aes(x=Camt,y=Cdur))+geom_point() #To plot - Cdur/InRate
+ggplot(creditworth,aes(x=Camt,y=Cdur))+geom_point()+geom_smooth(method='lm',se=FALSE)
+cor.test(creditworth$Cdur,creditworth$Camt)   # to find the correlation value
+```
+
+## SIMPLE LINEAR REGRESSION
+```{r}
+slr = lm(Camt~Cdur, creditworth) 
+summary(slr)
+plot(slr$resid)  # Residual plot
+qqnorm(slr$resid,ylab="Residuals")   #Q-Q Plot
+qqline(slr$resid)
+```
+```{r}
+slr = lm(age~Cdur, creditworth) 
+summary(slr)
+plot(slr$resid)  # Residual plot
+qqnorm(slr$resid,ylab="Residuals")   #Q-Q Plot
+qqline(slr$resid)
+```
+## MULTIPLE LINEAR REGRESSION
+```{r}
+mlr = lm(Cdur~age+Camt, creditworth) 
+summary(mlr)
+plot(mlr$resid)  # Residual plot
+qqnorm(mlr$resid,ylab="Residuals")   #Q-Q Plot
+qqline(mlr$resid)
+```
+
+* * *
+## Conclusion
+Hence, SLR and MLR are inplemented and analysed.
+
+* * *
+

@@ -1,0 +1,133 @@
+---
+title: 'Ex. No 4 : Time Series Forecasting'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim:
+
+#To study / implement .....
+
+## Setup
+```{r}
+rm(list=ls())
+```
+
+
+#Load necessary packages using library(packagename)
+```{r}
+library(dplyr)
+# install.packages("forecast")
+# install.packages("tseries")
+library("tseries")
+library("forecast")
+library(ggplot2)
+```
+
+#Load the data
+```{r}
+data(AirPassengers)
+data <- AirPassengers
+```
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+passenger <- data
+```
+
+#Description of the fields
+```{r}
+passenger
+```
+
+#Basic commands to describe dataset
+```{r}
+summary(passenger)
+```
+```{r}
+str(passenger)
+frequency(passenger)
+```
+
+
+* * *
+
+## Questions followed by corresponding Code & Output
+
+#(i)Display entire dataset
+```{r}
+passenger
+```
+
+#(ii)Check for unfilled data
+```{r}
+sum(is.na(passenger))
+```
+
+#(ii) Display the statistical info of the dataset such as min, max, 1st quartile, 3rd quartile, mean and median.
+```{r}
+summary(passenger)
+```
+
+#(iii) Plot ‘data’ (No. of Air passengers Vs Year)
+```{r}
+plot(passenger,xlab="Year", ylab = "Passengers (1000's)",main="Air Passengers from 1949 to 1961")
+```
+
+#(iv) Plot as timeseries ‘data’ (monthwise)
+```{r}
+boxplot(passenger~cycle(passenger),xlab="Month(number)", ylab = "Passengs (1000's)" ,main ="Monthly Air Passengers Boxplot from 1949 to 1961")
+```
+
+#(v) Decompose the data as multiplicative and store as ‘ddata’
+```{r}
+ddata <- decompose(passenger,"multiplicative")
+ddata
+```
+
+#(vi) Plot ‘ddata’
+```{r}
+autoplot(ddata)
+```
+
+#(vii) Plot the following: trend, seasonal and random separately.
+```{r}
+autoplot(ddata$trend)
+autoplot(ddata$seasonal)
+autoplot(ddata$random)
+```
+
+#(viii) Perform ADF test for stationarity
+```{r}
+adf.test(passenger)
+```
+
+#(ix) Plot ACF and PACF
+```{r}
+#ACF 
+autoplot(acf(passenger,plot=FALSE))+ labs(title="ACF plot of Air Passengers from 1949 to 1961")
+#PACF
+autoplot(pacf(passenger,plot=FALSE))+ labs(title="PACF plot of Air Passengers from 1949 to 1961")
+```
+
+#(x) Model using ARIMA
+```{r}
+arimapassenger <- auto.arima(passenger)
+arimapassenger
+```
+
+* * *
+

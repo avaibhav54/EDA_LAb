@@ -1,0 +1,169 @@
+---
+title: 'Ex. No : 2 - Solar Pond'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim: 
+
+#To study and analyse the given solar pond dataset and plotting respective graphs.
+
+## Setup
+```{r}
+rm(list=ls())
+```
+
+
+#Load necessary packages using library(packagename)
+```{r}
+library(ggplot2)
+library(readxl)
+```
+
+
+#Load the data
+```{r}
+d = read_excel("F:/sem - 6/CSE3506 - EDA/lab/lab 2/solarpond.xlsx", sheet = "data",col_names = TRUE)
+d1 = read_excel("F:/sem - 6/CSE3506 - EDA/lab/lab 2/solarpond.xlsx", sheet = "data1",col_names = TRUE)
+d2 = read_excel("F:/sem - 6/CSE3506 - EDA/lab/lab 2/solarpond.xlsx", sheet = "data2",col_names = TRUE)
+```
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+data <- d
+data1 <- d1
+data2 <- d2
+```
+
+#Description of the fields
+```{r}
+names(data)
+```
+
+#Basic commands to describe dataset
+```{r}
+str(data)
+```
+
+```{r}
+head(data)
+```
+```{r}
+summary(data)
+```
+
+```{r}
+summary(data1)
+```
+
+```{r}
+summary(data2)
+```
+* * *
+
+## Questions followed by corresponding Code & Output
+
+#1. rbind (data1, dat2)
+```{r}
+datas <- rbind(data1,data2)
+datas
+```
+
+#2. Store Temperature column : LCZ(TT=0), LCZ(TT=3), LCZ(TT=5), in variables V1, V2 and V3 respectively. Cbind all these three columns.
+```{r}
+V1 = datas$`LCZ(0)`
+V2 = datas$`LCZ(3)`
+V3 = datas$`LCZ(5)`
+cbind(V1,V2,V3)
+```
+
+#3. Plot Time Vs Pyranometer reading of ‘data’ for the month May
+```{r}
+plot(datas$Time,datas$`Pyranometer reading`)
+```
+
+
+#4. Plot Pyranometer reading Vs Two
+```{r}
+par(mfrow=c(2,3))
+plot(datas$`Pyranometer reading`,datas$`Two(0)`,pch=3)
+plot(datas$`Pyranometer reading`,datas$`Two(3)`,pch=17)
+plot(datas$`Pyranometer reading`,datas$`Two(5)`,pch=4)
+```
+
+```{r}
+plot(datas$`Pyranometer reading`,datas$`Two(0)`,pch=3,col='green')
+points(datas$`Pyranometer reading`,datas$`Two(3)`,pch=2,col='red')
+points(datas$`Pyranometer reading`,datas$`Two(5)`,pch=1,col='blue')
+```
+
+#5. Plot Pyranometer reading Vs Qact
+```{r}
+par(mfrow=c(2,3))
+plot(datas$`Pyranometer reading`,datas$`Qact(0)`,pch=3)
+plot(datas$`Pyranometer reading`,datas$`Qact(3)`,pch=17)
+plot(datas$`Pyranometer reading`,datas$`Qact(5)`,pch=4)
+```
+
+```{r}
+plot(datas$`Pyranometer reading`,datas$`Qact(0)`,pch=3,col='green')
+points(datas$`Pyranometer reading`,datas$`Qact(3)`,pch=2,col='red')
+points(datas$`Pyranometer reading`,datas$`Qact(5)`,pch=1,col='blue')
+```
+
+#6. Pyranometer reading Vs degree of temperature rise (T1)
+```{r}
+par(mfrow=c(2,3))
+plot(datas$`Pyranometer reading`,datas$`DT1(0)`,pch=3)
+plot(datas$`Pyranometer reading`,datas$`DT1(3)`,pch=17)
+plot(datas$`Pyranometer reading`,datas$`DT1(5)`,pch=4)
+```
+
+```{r}
+plot(datas$`Pyranometer reading`,datas$`DT1(0)`,pch=3,col='green')
+points(datas$`Pyranometer reading`,datas$`DT1(3)`,pch=2,col='red')
+points(datas$`Pyranometer reading`,datas$`DT1(5)`,pch=1,col='blue')
+```
+
+#7. Determine the best linear fit equation between Pyranometer reading and Two/Qact/Efficiency/Effectiveness
+```{r}
+model = lm(`Pyranometer reading`~`efficiency(3)`,data=data2)
+model$coefficients
+summary(model)
+sigma(model)
+```
+#8. Plot the best linear fit
+```{r}
+ggplot(data2,aes(x=`Pyranometer reading`,y=`efficiency(3)`))+geom_point()+geom_smooth(method='lm',se=FALSE)
+```
+
+#9. Determine the Residual Sum of Squares (RSS)
+```{r}
+print(paste('Residual sum of squares :' ,deviance(model)))
+```
+
+#10. Plot the residuals.
+```{r}
+plot(resid(model),data2$`efficiency(3)`)
+abline(0,0)
+hist(model$residuals)
+qqnorm(model$residuals,ylab="Residuals")
+qqline(model$residuals)
+```
+
+* * *
+
+

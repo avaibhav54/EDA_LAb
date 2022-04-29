@@ -1,0 +1,113 @@
+---
+title: 'Ex. No :5 Logistic regression'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim:
+
+#To study and analyse the given daibeties dataset using Logisic regression technique in R.
+
+## Setup
+
+#Load necessary packages using library(packagename)
+```{r}
+library(dplyr)
+```
+
+
+#Load the data
+```{r}
+data <- read.csv("F:/sem - 6/CSE3506 - EDA/lab/lab 5/diabetes.csv")
+```
+
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+diabetes <- data
+```
+
+
+#Description of the fields
+```{r}
+names(diabetes)
+```
+
+
+#Basic commands to describe dataset
+```{r}
+str(diabetes)
+```
+
+```{r}
+sum(is.na(diabetes))
+```
+
+```{r}
+summary(diabetes)
+```
+
+```{r}
+diabetes
+```
+
+```{r}
+diabetes$Outcome <- as.factor(diabetes$Outcome)
+str(diabetes)
+```
+
+* * *
+
+## Questions followed by corresponding Code & Output
+
+#Model Fitting
+```{r}
+set.seed(54)
+data <- sample(2,nrow(diabetes),replace = T, prob = c(0.75,0.25))
+train = diabetes[data==1,]
+test = diabetes[data==2,]
+```
+
+```{r}
+lrmodel = glm(Outcome~Pregnancies+Glucose+BloodPressure+SkinThickness+Insulin+BMI+DiabetesPedigreeFunction+Age,train,family = "binomial")
+summary(lrmodel)
+```
+
+```{r}
+lrmodel = glm(Outcome~Pregnancies+Glucose+BMI,train,family = "binomial")
+summary(lrmodel)
+```
+
+#Prediction
+```{r}
+pred <- predict(lrmodel,test,type = "response")
+pred
+```
+
+```{r}
+#confusion matrix
+table(test$Outcome, pred > 0.5)
+```
+
+```{r}
+pred_outcome <- ifelse(pred > 0.5, 1, 0)
+acc = mean(pred_outcome == test$Outcome)
+print(paste('Accuracy',acc))
+```
+
+* * *
+
+

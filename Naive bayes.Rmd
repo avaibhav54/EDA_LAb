@@ -1,0 +1,113 @@
+---
+title: 'Ex. No :6 Naive bayes'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+### Reg. No: 19BPS1014
+
+### Name:  A.L.Viswanath
+
+* * *
+## Aim:
+
+#To study and analyse the given daibeties dataset using Naive Bayes technique in R.
+
+## Setup
+
+#Load necessary packages using library(packagename)
+```{r}
+#install.packages('naivebayes')
+library(naivebayes)
+library(dplyr)
+```
+
+
+#Load the data
+```{r}
+data <- read.csv("F:/sem - 6/CSE3506 - EDA/lab/lab 6/diabetes.csv")
+```
+
+
+* * *
+
+## Dataset Description
+
+#Name of the Dataset
+```{r}
+diabetes <- data
+```
+
+
+#Description of the fields
+```{r}
+names(diabetes)
+```
+
+
+#Basic commands to describe dataset
+```{r}
+str(diabetes)
+```
+
+```{r}
+sum(is.na(diabetes))
+```
+
+```{r}
+summary(diabetes)
+```
+
+```{r}
+diabetes
+```
+
+```{r}
+diabetes$Outcome <- as.factor(diabetes$Outcome)
+str(diabetes)
+```
+
+* * *
+
+## Questions followed by corresponding Code & Output
+
+#Model Fitting
+```{r}
+set.seed(54)
+data <- sample(2,nrow(diabetes),replace = T, prob = c(0.75,0.25))
+train = diabetes[data==1,]
+test = diabetes[data==2,]
+```
+
+```{r}
+nbmodel <- naive_bayes(Outcome~.,train, usekernel = T) 
+nbmodel
+```
+```{r}
+plot(nbmodel) 
+```
+
+```{r}
+summary(nbmodel)
+```
+
+#Prediction
+```{r}
+p <- predict(nbmodel, test, type = 'prob')
+head(cbind(p, test))
+```
+
+```{r}
+#confusion matrix
+p <- predict(nbmodel, test)
+tab <- table(p, test$Outcome)
+per = 1 - sum(diag(tab)) / sum(tab)
+print(paste('Missclassification(%): ',per))
+```
+* * *
+
+
